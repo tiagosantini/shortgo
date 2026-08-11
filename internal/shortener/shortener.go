@@ -32,7 +32,7 @@ func ShortenUrl(original *models.OriginalUrl) (*models.ShortenedUrl, error) {
 	}
 
 	// Generate URL hexadecimal string
-	hexString, err := random.GenerateHexString()
+	hexString, err := random.GenerateBase64String()
 	if err != nil {
 		return nil, err
 	}

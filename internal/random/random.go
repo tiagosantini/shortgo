@@ -2,11 +2,11 @@ package random
 
 import (
 	"crypto/rand"
-	"encoding/hex"
+	"encoding/base64"
 	"errors"
 )
 
-func GenerateHexString() (string, error) {
+func GenerateBase64String() (string, error) {
 	// Create random 8 bytes token
 	token := make([]byte, 8)
 
@@ -15,6 +15,6 @@ func GenerateHexString() (string, error) {
 		return "", errors.New("Failed to generate random bytes.")
 	}
 
-	// Encode token into 16 (8 * 2) character hex string
-	return hex.EncodeToString(token), nil
+	// Encode token into base64 string
+	return base64.RawURLEncoding.EncodeToString(token)[:7], nil
 }
