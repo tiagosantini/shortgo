@@ -40,10 +40,10 @@ func JsonEncode(destination string, data []models.ShortenedUrl) error {
 		return err
 	}
 
+	// Rename and remove tempfile
 	if err = os.Rename(tempFilename, destination); err != nil {
 		return err
 	}
-
 	os.Remove(tempFilename)
 
 	log.Printf("[%s] tempfile synced successfully and was removed", tempFilename)

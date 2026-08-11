@@ -18,7 +18,7 @@ func shortenUrlHandler(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	defer req.Body.Close()
+	req.Body.Close()
 
 	// Generate shortened URL
 	shortenedUrl, err := shortener.ShortenUrl(&originalUrl)
