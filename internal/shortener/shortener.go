@@ -15,19 +15,20 @@ import (
 var mu sync.Mutex
 
 func ShortenUrl(original *models.OriginalUrl) (*models.ShortenedUrl, error) {
-	
-	// Get app data paths
+	// Get app data path
 	appDataDirPath, err := storage.GetAppDataDirPath()
 	if err != nil {
 		return nil, err
 	}
 
-	// Try to fetch stored app data
 	appDataFilePath := filepath.Join(appDataDirPath, "data.json")
 
+	// For safety this operation needs to be locked...
+	// to avoid conflicting writes and data loss
 	mu.Lock()
 	defer mu.Unlock()
 
+	// Try to fetch stored app data
 	storedData, err := storage.JsonDecode(appDataFilePath)
 	if err != nil {
 		return nil, err
@@ -56,7 +57,7 @@ func ShortenUrl(original *models.OriginalUrl) (*models.ShortenedUrl, error) {
 }
 
 func GenerateBase64String() (string, error) {
-	// Create random 8 bytes token
+	// Create random 6 bytes token for 48 bits of entropy
 	token := make([]byte, 6)
 
 	_, err := rand.Read(token)
@@ -64,6 +65,6 @@ func GenerateBase64String() (string, error) {
 		return "", errors.New("Failed to generate random bytes.")
 	}
 
-	// Encode token into base64 string
+	// Encode token bits into 8 Base64 string characters
 	return base64.RawURLEncoding.EncodeToString(token), nil
 }
