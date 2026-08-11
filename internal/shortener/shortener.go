@@ -1,11 +1,13 @@
 package shortener
 
 import (
+	"crypto/rand"
+	"encoding/base64"
+	"errors"
 	"path/filepath"
 	"sync"
 
 	"github.com/tiagosantini/shortgo/internal/models"
-	"github.com/tiagosantini/shortgo/internal/random"
 	"github.com/tiagosantini/shortgo/internal/storage"
 )
 
@@ -31,15 +33,15 @@ func ShortenUrl(original *models.OriginalUrl) (*models.ShortenedUrl, error) {
 		return nil, err
 	}
 
-	// Generate URL hexadecimal string
-	hexString, err := random.GenerateBase64String()
+	// Generate short Base64 URL key
+	urlKey, err := GenerateBase64String()
 	if err != nil {
 		return nil, err
 	}
 
 	// Create and store shortened URL
 	shortenedUrl := models.ShortenedUrl{
-		Key: hexString,
+		Key: urlKey,
 		Url: original.Url,
 	}
 
@@ -51,4 +53,17 @@ func ShortenUrl(original *models.OriginalUrl) (*models.ShortenedUrl, error) {
 	}
 
 	return &shortenedUrl, nil;
+}
+
+func GenerateBase64String() (string, error) {
+	// Create random 8 bytes token
+	token := make([]byte, 6)
+
+	_, err := rand.Read(token)
+	if err != nil {
+		return "", errors.New("Failed to generate random bytes.")
+	}
+
+	// Encode token into base64 string
+	return base64.RawURLEncoding.EncodeToString(token), nil
 }
