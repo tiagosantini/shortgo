@@ -5,5 +5,5 @@ POST {{base}}/shorten
 Content-Type: application/json
 
 {
-    "url": "https://www.google.com"
+    "url": "https://www.academiadoprogramador.net"
 }
